@@ -27,9 +27,10 @@ ref = st.query_params.get("ref", [None])[0]
 if "logado" not in st.session_state:
     st.session_state.logado = False
 
+# ⬇️ Fluxo de login/cadastro
 if not st.session_state.logado:
     tipo = st.radio("👤 Acesso:", ["Já tenho conta", "Criar conta"])
-
+    
     if tipo == "Já tenho conta":
         login_email = st.text_input("📧 E-mail")
         senha = st.text_input("🔑 Senha", type="password")
@@ -42,6 +43,7 @@ if not st.session_state.logado:
             else:
                 st.error("E-mail ou senha inválidos.")
         st.stop()
+    
     else:
         st.markdown("### ✍️ Cadastro")
         nome = st.text_input("Nome")
@@ -81,11 +83,6 @@ if not st.session_state.logado:
                 st.session_state.logado = True
                 st.rerun()
         st.stop()
-
-if not all(k in st.session_state for k in ("usuario", "usuario_email")):
-    st.error("Erro ao recuperar sessão. Por favor, faça login novamente.")
-    st.stop()
-
 usuario = st.session_state.usuario
 email = st.session_state.usuario_email
 nivel = len(usuario["bilhetes"]) // 5 + 1
@@ -124,14 +121,14 @@ with col1:
 
 with col2:
     st.markdown("### 📨 Indique Amigos")
-    st.markdown("Clique no campo para copiar o link. Ganhe **+1 bilhete** por cada indicado!")
+    st.markdown("Clique no campo para copiar o link. Ganhe **+1 bilhete** por indicado!")
     link = f"{st.get_url()}?ref={email}"
     st.markdown(f"""
     <input type="text" value="{link}" id="linkCopiavel" readonly onclick="this.select();document.execCommand('copy');" 
     style="width:100%;padding:10px;border-radius:5px;border:1px solid lightgray;text-align:center;font-weight:bold;color:#333">
-    <p style="text-align:center;font-size:14px;color:green;">✅ Copiado automaticamente ao clicar!</p>
+    <p style="text-align:center;font-size:14px;color:green;">✅ Copiado ao clicar!</p>
     <p style="text-align:center;margin-top:10px">
-        <a href="https://wa.me/?text=Participe%20comigo%20do%20SorteX!%20Cadastre-se%20com%20esse%20link%3A%20{link}" 
+        <a href="https://wa.me/?text=Participe%20do%20SorteX!%20Cadastre-se%20com%20esse%20link%3A%20{link}" 
         target="_blank" style="text-decoration:none;color:white;background-color:#25D366;padding:10px 20px;border-radius:5px;display:inline-block">
         📲 Compartilhar no WhatsApp
         </a>
@@ -185,4 +182,21 @@ if st.button("🎉 PARTICIPAR DO SORTEIO", use_container_width=True):
         vencedor = random.choice(usuario["bilhetes"])
         st.success(f"🎉 Bilhete sorteado: #{vencedor}")
         usuario["rifacoins"] = 0
-        usuario["bilhe
+        usuario["bilhetes"] = []
+        salvar_json(ARQ_USUARIOS, usuarios)
+        ganhadores.append({
+            "nome": usuario["nome"],
+            "bilhete": vencedor,
+            "data": datetime.now().strftime("%d/%m/%Y")
+        })
+        salvar_json(ARQ_GANHADORES, ganhadores)
+        st.balloons()
+    else:
+        st.warning("Você precisa de bilhetes.")
+
+st.markdown("## 🏆 Últimos ganhadores")
+if ganhadores:
+    for g in reversed(ganhadores[-5:]):
+        st.markdown(f"🎉 **{g['nome']}** — bilhete #{g['bilhete']} em {g['data']}")
+else:
+    st.info("Ainda não houve ganhadores registrados.")
