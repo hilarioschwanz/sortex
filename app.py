@@ -13,7 +13,7 @@ ARQ_INDICACOES = "indicacoes.json"
 ARQ_PREMIO = "premio.json"
 
 def carregar_json(arq):
-    return json.load(open(arq)) if os.path.exists(arq) else ({} if "json" in arq else [])
+    return json.load(open(arq)) if os.path.exists(arq) else ({} if "usuarios" in arq or "indicacoes" in arq else [])
 
 def salvar_json(arq, dados):
     with open(arq, "w") as f:
@@ -44,6 +44,7 @@ if not st.session_state.logado:
             else:
                 st.error("E-mail ou senha inválidos.")
         st.stop()
+
     else:
         st.markdown("### ✍️ Cadastro")
         nome = st.text_input("Nome")
@@ -51,6 +52,7 @@ if not st.session_state.logado:
         telefone = st.text_input("Telefone")
         senha = st.text_input("Senha", type="password")
         captcha = st.text_input("Quanto é 3 + 4?")
+
         if st.button("✅ Finalizar Cadastro"):
             erros = []
             if not nome or not email or "@" not in email:
@@ -60,16 +62,22 @@ if not st.session_state.logado:
             if captcha.strip() != "7":
                 erros.append("Captcha incorreto.")
             if erros:
-                for e in erros: st.warning(e)
+                for e in erros:
+                    st.warning(e)
             else:
                 usuarios[email] = {
-                    "nome": nome, "telefone": telefone, "senha": senha,
-                    "rifacoins": 0, "bilhetes": [], "avaliou": False
+                    "nome": nome,
+                    "telefone": telefone,
+                    "senha": senha,
+                    "rifacoins": 0,
+                    "bilhetes": [],
+                    "avaliou": False
                 }
                 if ref and ref in usuarios and ref != email:
                     usuarios[ref]["bilhetes"].append(random.randint(1000, 9999))
                     indicacoes[email] = ref
                     salvar_json(ARQ_INDICACOES, indicacoes)
+
                 salvar_json(ARQ_USUARIOS, usuarios)
                 st.session_state.usuario = usuarios[email]
                 st.session_state.usuario_email = email
@@ -89,7 +97,6 @@ if st.button("🚪 Sair"):
     st.session_state.clear()
     st.rerun()
 
-# Destaque do prêmio
 try:
     valor = carregar_json(ARQ_PREMIO)["premio_do_dia"]
 except:
@@ -104,7 +111,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Seção de recompensas lado a lado
 st.markdown("## 🚀 Ganhe Rifacoins e Bilhetes")
 
 col1, col2, col3 = st.columns(3)
@@ -116,15 +122,15 @@ with col1:
         salvar_json(ARQ_USUARIOS, usuarios)
 
 with col2:
-    st.markdown("📨 **Indique amigos**")
-    link = f"https://sortex.streamlit.app/{email}"
-    st.code(link)
-    st.caption("Cada novo cadastro via esse link te dá 1 bilhete!")
+    st.markdown("📨 **Seu link de convite**")
+    link = f"https://effective-space-trout-jj9ggqpvwwrqhqp69-8501.app.github.dev/?ref={email}"
+    st.text_input("Link de indicação", value=link, disabled=True, label_visibility="collapsed")
+    st.caption("💡 Copie e compartilhe este link. Cada novo cadastro vale 1 bilhete!")
 
 with col3:
     if not usuario.get("avaliou", False):
-        if st.button("⭐ Avaliar o app"):
-            st.markdown("[Avalie na Play Store](https://play.google.com)", unsafe_allow_html=True)
+        if st.button("⭐ Avaliar app"):
+            st.markdown("[Avalie aqui](https://play.google.com)", unsafe_allow_html=True)
             if st.checkbox("✅ Marque se já avaliou com 5 estrelas"):
                 novo = random.randint(1000, 9999)
                 usuario["bilhetes"].append(novo)
@@ -132,28 +138,25 @@ with col3:
                 salvar_json(ARQ_USUARIOS, usuarios)
                 st.success(f"🎟️ Bilhete #{novo} adicionado!")
 
-# Trocar Rifacoins
 if st.button("🔁 Trocar 10 Rifacoins por 1 Bilhete"):
     if usuario["rifacoins"] >= 10:
         usuario["rifacoins"] -= 10
         novo = random.randint(1000, 9999)
         usuario["bilhetes"].append(novo)
         salvar_json(ARQ_USUARIOS, usuarios)
-        st.success(f"Bilhete gerado: #{novo}")
+        st.success(f"Novo bilhete gerado: #{novo}")
     else:
         st.warning("Você precisa de 10 Rifacoins.")
 
-# Ver bilhetes
 if st.button("📜 Ver bilhetes"):
     if usuario["bilhetes"]:
         st.code(", ".join(map(str, usuario["bilhetes"])))
     else:
         st.info("Você ainda não tem bilhetes.")
 
-# Sorteio
 if st.button("🎯 Sortear"):
     if usuario["bilhetes"]:
-        with st.spinner("Girando..."):
+        with st.spinner("Sorteando..."):
             time.sleep(2)
         vencedor = random.choice(usuario["bilhetes"])
         st.success(f"🎉 Bilhete sorteado: #{vencedor}")
@@ -171,10 +174,9 @@ if st.button("🎯 Sortear"):
     else:
         st.warning("Você precisa de bilhetes para sortear.")
 
-# Últimos ganhadores
 st.markdown("## 🏆 Últimos ganhadores")
 if ganhadores:
     for g in reversed(ganhadores[-5:]):
         st.markdown(f"🎉 **{g['nome']}** — bilhete #{g['bilhete']} em {g['data']}")
 else:
-    st.info("Ainda não houve ganhadores.")
+    st.info("Ainda não houve ganhadores registrados.")
