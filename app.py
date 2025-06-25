@@ -117,7 +117,7 @@ with col1:
 
 with col2:
     st.markdown("📨 **Indique amigos**")
-    link = f"https://effective-space-trout-jj9ggqpvwwrqhqp69-8501.app.github.dev/?ref={email}"
+    link = f"https://sortex.streamlit.app/{email}"
     st.code(link)
     st.caption("Cada novo cadastro via esse link te dá 1 bilhete!")
 
