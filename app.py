@@ -123,24 +123,20 @@ with col1:
     st.markdown("<hr style='border:1px dashed lightgray;'>", unsafe_allow_html=True)
 
 with col2:
-   link = f"{st.get_url()}?ref={email}"
-
-st.markdown("### 📨 Indique Amigos")
-st.markdown("Clique no campo abaixo para copiar automaticamente seu link de indicação!")
-
-st.markdown(f"""
-<input type="text" value="{link}" id="linkCopiavel" readonly onclick="this.select();document.execCommand('copy');" 
-style="width:100%;padding:10px;border-radius:5px;border:1px solid lightgray;color:#333;font-weight:bold;text-align:center">
-
-<p style="text-align:center;font-size:14px;color:green;">✅ Copiado ao clicar!</p>
-
-<p style='text-align:center;margin-top:10px'>
-<a href="https://wa.me/?text=Ei!%20Cadastre-se%20no%20SorteX%20e%20tente%20a%20sorte%20com%20esse%20link%3A%20{link}" 
-target="_blank" style="text-decoration:none;color:white;background-color:#25D366;padding:10px 20px;border-radius:5px;display:inline-block">
-📲 Compartilhar no WhatsApp
-</a>
-</p>
-""", unsafe_allow_html=True)
+    st.markdown("### 📨 Indique Amigos")
+    st.markdown("Clique no campo para copiar o link. Ganhe **+1 bilhete** por cada indicado!")
+    link = f"{st.get_url()}?ref={email}"
+    st.markdown(f"""
+    <input type="text" value="{link}" id="linkCopiavel" readonly onclick="this.select();document.execCommand('copy');" 
+    style="width:100%;padding:10px;border-radius:5px;border:1px solid lightgray;text-align:center;font-weight:bold;color:#333">
+    <p style="text-align:center;font-size:14px;color:green;">✅ Copiado automaticamente ao clicar!</p>
+    <p style="text-align:center;margin-top:10px">
+        <a href="https://wa.me/?text=Participe%20comigo%20do%20SorteX!%20Cadastre-se%20com%20esse%20link%3A%20{link}" 
+        target="_blank" style="text-decoration:none;color:white;background-color:#25D366;padding:10px 20px;border-radius:5px;display:inline-block">
+        📲 Compartilhar no WhatsApp
+        </a>
+    </p>
+    """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("### ⭐ Avalie o SorteX")
@@ -189,21 +185,4 @@ if st.button("🎉 PARTICIPAR DO SORTEIO", use_container_width=True):
         vencedor = random.choice(usuario["bilhetes"])
         st.success(f"🎉 Bilhete sorteado: #{vencedor}")
         usuario["rifacoins"] = 0
-        usuario["bilhetes"] = []
-        salvar_json(ARQ_USUARIOS, usuarios)
-        ganhadores.append({
-            "nome": usuario["nome"],
-            "bilhete": vencedor,
-            "data": datetime.now().strftime("%d/%m/%Y")
-        })
-        salvar_json(ARQ_GANHADORES, ganhadores)
-        st.balloons()
-    else:
-        st.warning("Você precisa de bilhetes.")
-
-st.markdown("## 🏆 Últimos ganhadores")
-if ganhadores:
-    for g in reversed(ganhadores[-5:]):
-        st.markdown(f"🎉 **{g['nome']}** — bilhete #{g['bilhete']} em {g['data']}")
-else:
-    st.info("Ainda não houve ganhadores registrados.")
+        usuario["bilhe
