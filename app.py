@@ -27,10 +27,9 @@ ref = st.query_params.get("ref", [None])[0]
 if "logado" not in st.session_state:
     st.session_state.logado = False
 
-# ⬇️ Fluxo de login/cadastro
 if not st.session_state.logado:
     tipo = st.radio("👤 Acesso:", ["Já tenho conta", "Criar conta"])
-    
+
     if tipo == "Já tenho conta":
         login_email = st.text_input("📧 E-mail")
         senha = st.text_input("🔑 Senha", type="password")
@@ -43,7 +42,7 @@ if not st.session_state.logado:
             else:
                 st.error("E-mail ou senha inválidos.")
         st.stop()
-    
+
     else:
         st.markdown("### ✍️ Cadastro")
         nome = st.text_input("Nome")
@@ -117,15 +116,15 @@ with col1:
         st.markdown("[Clique aqui para assistir](https://www.profitableratecpm.com/xevfhnbgtr?key=3a03fde3a5386ae02c06b19a488d4e04)", unsafe_allow_html=True)
         usuario["rifacoins"] += 1
         salvar_json(ARQ_USUARIOS, usuarios)
-    st.markdown("<hr style='border:1px dashed lightgray;'>", unsafe_allow_html=True)
 
 with col2:
     st.markdown("### 📨 Indique Amigos")
-    st.markdown("Clique no campo para copiar o link. Ganhe **+1 bilhete** por indicado!")
-    link = f"{st.get_url()}?ref={email}"
+    st.markdown("Clique no campo para copiar seu link. Ganhe **+1 bilhete** por indicado!")
+    link_base = "https://seu-app.streamlit.app"  # substitua pelo link real do app
+    link = f"{link_base}?ref={email}"
     st.markdown(f"""
-    <input type="text" value="{link}" id="linkCopiavel" readonly onclick="this.select();document.execCommand('copy');" 
-    style="width:100%;padding:10px;border-radius:5px;border:1px solid lightgray;text-align:center;font-weight:bold;color:#333">
+    <input type="text" value="{link}" onclick="this.select();document.execCommand('copy');"
+    style="width:100%;padding:10px;border-radius:5px;border:1px solid lightgray;text-align:center;font-weight:bold;color:#333" readonly>
     <p style="text-align:center;font-size:14px;color:green;">✅ Copiado ao clicar!</p>
     <p style="text-align:center;margin-top:10px">
         <a href="https://wa.me/?text=Participe%20do%20SorteX!%20Cadastre-se%20com%20esse%20link%3A%20{link}" 
