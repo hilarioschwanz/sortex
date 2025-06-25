@@ -124,9 +124,23 @@ with col1:
 
 with col2:
     st.markdown("### 📨 Indique Amigos")
-    st.markdown("Compartilhe e ganhe **+1 bilhete**!")
-    link = f"?ref={email}"
-    st.text_input("Seu link de indicação", value=link, disabled=True, label_visibility="collapsed")
+st.markdown("Compartilhe o link abaixo e ganhe **+1 bilhete** por indicação!")
+
+link = f"{st.get_url()}?ref={email}"
+copiado = st.text_input("Clique no botão para copiar:", value=link, disabled=True)
+
+col_copiar, col_share = st.columns([1, 1.5])
+
+with col_copiar:
+    if st.button("📋 Copiar link"):
+        st.session_state["copiado"] = True
+        st.success("Link copiado! Agora é só colar onde quiser 😉")
+
+with col_share:
+    st.markdown(
+        f"[🔗 Compartilhar no WhatsApp](https://wa.me/?text=Participa%20comigo%20do%20SorteX!%20%F0%9F%8E%B2%20Cadastre-se%20aqui%20%F0%9F%91%87%0A{link})",
+        unsafe_allow_html=True
+    )
     st.markdown("<hr style='border:1px dashed lightgray;'>", unsafe_allow_html=True)
 
 with col3:
