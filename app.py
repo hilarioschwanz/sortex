@@ -116,27 +116,33 @@ st.markdown("## 🚀 Ganhe Rifacoins e Bilhetes")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button("▶️ Anúncio"):
-        st.markdown("[Assista aqui](https://www.profitableratecpm.com/xevfhnbgtr?key=3a03fde3a5386ae02c06b19a488d4e04)", unsafe_allow_html=True)
+    st.markdown("### 🎬 Assistir Anúncio")
+    st.markdown("Assista a um vídeo curto e ganhe **+1 Rifacoin** automaticamente.")
+    if st.button("▶️ Assistir agora"):
+        st.markdown("[Clique aqui para assistir](https://www.profitableratecpm.com/xevfhnbgtr?key=3a03fde3a5386ae02c06b19a488d4e04)", unsafe_allow_html=True)
         usuario["rifacoins"] += 1
         salvar_json(ARQ_USUARIOS, usuarios)
 
 with col2:
-    st.markdown("📨 **Seu link de convite**")
+    st.markdown("### 📨 Indique Amigos")
+    st.markdown("Compartilhe o link abaixo. Quando um amigo se cadastrar, você ganha **+1 bilhete**!")
     link = f"https://effective-space-trout-jj9ggqpvwwrqhqp69-8501.app.github.dev/?ref={email}"
-    st.text_input("Link de indicação", value=link, disabled=True, label_visibility="collapsed")
-    st.caption("💡 Copie e compartilhe este link. Cada novo cadastro vale 1 bilhete!")
+    st.text_input("Seu link de indicação", value=link, disabled=True, label_visibility="collapsed")
 
 with col3:
+    st.markdown("### ⭐ Avalie o SorteX")
+    st.markdown("Avalie nosso app na Play Store e receba **+1 bilhete** como agradecimento.")
     if not usuario.get("avaliou", False):
-        if st.button("⭐ Avaliar app"):
-            st.markdown("[Avalie aqui](https://play.google.com)", unsafe_allow_html=True)
-            if st.checkbox("✅ Marque se já avaliou com 5 estrelas"):
+        if st.button("🌟 Avaliar agora"):
+            st.markdown("[Avaliar na Play Store](https://play.google.com)", unsafe_allow_html=True)
+            if st.checkbox("✅ Já avaliei com 5 estrelas"):
                 novo = random.randint(1000, 9999)
                 usuario["bilhetes"].append(novo)
                 usuario["avaliou"] = True
                 salvar_json(ARQ_USUARIOS, usuarios)
-                st.success(f"🎟️ Bilhete #{novo} adicionado!")
+                st.success(f"🎟️ Bilhete #{novo} adicionado com sucesso!")
+    else:
+        st.info("✅ Obrigado por avaliar!")
 
 if st.button("🔁 Trocar 10 Rifacoins por 1 Bilhete"):
     if usuario["rifacoins"] >= 10:
