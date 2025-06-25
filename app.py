@@ -125,13 +125,13 @@ with col1:
 
 with col2:
     st.markdown("### 📨 Indique Amigos")
-    st.markdown("Compartilhe o link abaixo. Quando um amigo se cadastrar, você ganha **+1 bilhete**!")
+    st.markdown("Compartilhe o link e ganhe **+1 bilhete**!")
     link = f"https://effective-space-trout-jj9ggqpvwwrqhqp69-8501.app.github.dev/?ref={email}"
     st.text_input("Seu link de indicação", value=link, disabled=True, label_visibility="collapsed")
 
 with col3:
     st.markdown("### ⭐ Avalie o SorteX")
-    st.markdown("Avalie nosso app na Play Store e receba **+1 bilhete** como agradecimento.")
+    st.markdown("Avalie nosso app na Play Store e receba **+1 bilhete**")
     if not usuario.get("avaliou", False):
         if st.button("🌟 Avaliar agora"):
             st.markdown("[Avaliar na Play Store](https://play.google.com)", unsafe_allow_html=True)
