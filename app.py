@@ -82,7 +82,6 @@ if not st.session_state.logado:
                 st.rerun()
         st.stop()
 
-# Garante que sessão está completa
 if not all(k in st.session_state for k in ("usuario", "usuario_email")):
     st.error("Erro ao recuperar sessão. Por favor, faça login novamente.")
     st.stop()
@@ -98,7 +97,6 @@ if st.button("🚪 Sair"):
     st.session_state.clear()
     st.rerun()
 
-# Prêmio do dia
 try:
     valor = carregar_json(ARQ_PREMIO)["premio_do_dia"]
 except:
@@ -112,7 +110,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Bloco de ações
 st.markdown("## 🚀 Ganhe Rifacoins e Bilhetes")
 col1, col2, col3 = st.columns(3)
 
@@ -147,7 +144,6 @@ with col3:
     else:
         st.info("✅ Obrigado por avaliar!")
 
-# Rifacoins e bilhetes
 st.markdown("## 🎟️ Bilhetes e Rifas")
 col_a, col_b = st.columns(2)
 
@@ -169,7 +165,6 @@ with col_b:
         else:
             st.info("Você ainda não tem bilhetes.")
 
-# Sorteio
 st.markdown("## 🧨 Pronto para testar a sorte?")
 st.markdown(f"<h2 style='text-align:center;color:#d40000;'>🎯 SORTEIO DO DIA</h2>", unsafe_allow_html=True)
 st.markdown(f"<h1 style='text-align:center;font-size:48px;color:#000'>{valor}</h1>", unsafe_allow_html=True)
@@ -193,8 +188,9 @@ if st.button("🎉 PARTICIPAR DO SORTEIO", use_container_width=True):
     else:
         st.warning("Você precisa de bilhetes.")
 
-# Ganhadores
 st.markdown("## 🏆 Últimos ganhadores")
 if ganhadores:
     for g in reversed(ganhadores[-5:]):
-        st.markdown(f
+        st.markdown(f"🎉 **{g['nome']}** — bilhete #{g['bilhete']} em {g['data']}")
+else:
+    st.info("Ainda não houve ganhadores registrados.")
